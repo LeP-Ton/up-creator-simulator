@@ -1,0 +1,7 @@
+node_modules/
+*.tar.gz
+*.tgz
+.sites-runtime/
+.sites-checkout/
+qa/
+creator-studio/dist/standalone.html

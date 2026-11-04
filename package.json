@@ -1,0 +1,11 @@
+{
+  "name": "up-creator-simulator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node creator-studio/scripts/build-standalone.mjs",
+    "dev": "node creator-studio/scripts/serve.mjs",
+    "test": "node --test creator-studio/tests/*.test.mjs",
+    "check": "node --check creator-studio/dist/app.js && node --check creator-studio/dist/engine.mjs && node --check creator-studio/dist/data.mjs && node --check creator-studio/scripts/serve.mjs && node --check creator-studio/scripts/build-standalone.mjs"
+  }
+}
