@@ -1,3 +1,34 @@
+/* 注册渐变色阶，使背景渐变也能随平台颜色连续过渡。 */
+@property --banner-start {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #fff0f1;
+}
+
+@property --banner-middle {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffeff2;
+}
+
+@property --banner-end {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffe1e8;
+}
+
+@property --season-start {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #343036;
+}
+
+@property --season-end {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #302329;
+}
+
 :root {
   font-family: 'Noto Sans SC','Microsoft YaHei',sans-serif;
   color: #25252d;
@@ -7,6 +38,11 @@
   --accent-soft: #fff0f3;
   --accent-hover: #e51b44;
   --sidebar: #19191f;
+  --banner-start: #fff0f1;
+  --banner-middle: #ffeff2;
+  --banner-end: #ffe1e8;
+  --season-start: #343036;
+  --season-end: #302329;
   --line: #eef0f3;
   --muted: #999ca6;
   --green: #28ae87
@@ -19,7 +55,9 @@
 body {
   margin: 0;
   font-size: 13px;
-  line-height: 1.6
+  line-height: 1.6;
+  background: #f7f8fa;
+  transition: background-color .32s ease, --banner-start .32s ease, --banner-middle .32s ease, --banner-end .32s ease, --season-start .32s ease, --season-end .32s ease;
 }
 
 button,input {
@@ -515,7 +553,7 @@ img {
   overflow: hidden;
   margin: 36px 7px 20px;
   padding: 16px 12px 13px;
-  background: linear-gradient(125deg,#343036,#302329);
+  background: linear-gradient(125deg,var(--season-start),var(--season-end));
   border: 1px solid #66504555;
   border-radius: 7px;
   flex-shrink: 0
@@ -934,7 +972,7 @@ main {
 
 .creation-banner {
   min-height: 217px;
-  background: linear-gradient(113deg,#fff0f1,#ffeff2 48%,#ffe1e8);
+  background: linear-gradient(113deg,var(--banner-start),var(--banner-middle) 48%,var(--banner-end));
   border: 1px solid #ffdde5;
   border-radius: 9px;
   position: relative;
@@ -3781,6 +3819,11 @@ body[data-platform=bilibili] {
   --accent-soft: #ecfaff;
   --accent-hover: #009bd5;
   --sidebar: #fff;
+  --banner-start: #e8f8ff;
+  --banner-middle: #dff4ff;
+  --banner-end: #d6f3fc;
+  --season-start: #f6fbfe;
+  --season-end: #edf6fd;
   background: #f5f7fa
 }
 
@@ -3852,7 +3895,6 @@ body[data-platform=bilibili] .sidebar-bottom button {
 }
 
 body[data-platform=bilibili] .creation-banner {
-  background: linear-gradient(115deg,#e8f8ff,#dff4ff 50%,#d6f3fc);
   border-color: #d9f0fc
 }
 
@@ -3891,7 +3933,6 @@ body[data-platform=bilibili] .floating-like .icon {
 }
 
 body[data-platform=bilibili] .season-card {
-  background: linear-gradient(110deg,#f6fbfe,#edf6fd);
   border-color: #dceef9
 }
 
@@ -3912,6 +3953,8 @@ body[data-platform=xiaohongshu] {
   --accent-soft: #fff0f1;
   --accent-hover: #e31b36;
   --sidebar: #fff;
+  --season-start: #fff5f2;
+  --season-end: #fef0f0;
   background: #f9f9fa
 }
 
@@ -3977,7 +4020,6 @@ body[data-platform=xiaohongshu] .sidebar-bottom button {
 }
 
 body[data-platform=xiaohongshu] .season-card {
-  background: linear-gradient(110deg,#fff5f2,#fef0f0);
   border-color: #f5e6e6
 }
 
@@ -4003,6 +4045,22 @@ body[data-platform=xiaohongshu] .inspiration-image {
 
 body[data-platform=xiaohongshu] .button-primary {
   border-radius: 20px
+}
+
+/* 对同一组节点切换主题，避免全页或弹窗重新挂载造成颜色跳变。 */
+.sidebar, .brand, .brand small, .account-card, .account-card strong,
+.nav-label, .nav-item, .nav-item > .icon, .nav-divider, .nav-badge,
+.sidebar-bottom > span, .sidebar-bottom button, .creation-banner,
+.banner-copy h2, .banner-copy p, .banner-tag, .banner-secondary,
+.art-orbit, .floating-like, .floating-like .icon, .season-card,
+.season-card strong, .season-card > div, .season-card small,
+.onboarding-brand, .button-primary, .platform-option, .radio-check,
+.text-input, .legend-dot, .chart-tabs button, .chart-tabs button::after,
+.chart-container path, .chart-container circle {
+  transition: background-color .32s ease, border-color .32s ease,
+    color .32s ease, box-shadow .32s ease, outline-color .32s ease,
+    fill .32s ease, stroke .32s ease, border-radius .32s ease,
+    transform .15s ease;
 }
 
 @keyframes fade-in {

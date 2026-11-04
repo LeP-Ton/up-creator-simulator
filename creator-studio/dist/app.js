@@ -76,8 +76,38 @@ function toast(text, type = 'success') {
 const routeNames = { dashboard: '账号总览', videos: '作品管理', live: '直播中心', analytics: '数据看板', rankings: '人气榜单', hotspots: '创作灵感' };
 function navButton(route, label, ico, extra = '') { return `<button class="nav-item ${ui.route === route ? 'active' : ''}" data-route="${route}">${icon(ico)}<span>${label}</span>${extra}</button>`; }
 function avatar(name = game.nickname, cls = '') { return `<span class="avatar ${cls}">${esc(name.slice(-2, -1) || name[0])}</span>`; }
+function applyPlatformTheme() {
+  // 选择时只预览主题，确认前不切换账号或写入存档。
+  const platform = ui.modal?.type === 'platform' ? ui.selectedPlatform : game.platform;
+  document.body.dataset.platform = platform;
+  const brandMark = $('.brand-mark');
+  if (brandMark && brandMark.dataset.themePlatform !== platform) {
+    brandMark.innerHTML = logo(platform);
+    brandMark.dataset.themePlatform = platform;
+  }
+  const platformSwitch = $('.platform-switch');
+  if (platformSwitch && platformSwitch.dataset.themePlatform !== platform) {
+    platformSwitch.innerHTML = `${logo(platform)}<span>${PLATFORMS[platform].name}</span>${icon('down')}`;
+    platformSwitch.dataset.themePlatform = platform;
+  }
+  const accountLabel = $('.account-card small');
+  if (accountLabel) accountLabel.innerHTML = `<i class="status-dot"></i> ${PLATFORMS[platform].name} · 创作进行时`;
+}
+function updatePlatformSelection() {
+  applyPlatformTheme();
+  // 保留节点，让边框、底色和按钮可以从上一次颜色平滑过渡，也保留键盘焦点。
+  document.querySelectorAll('.platform-option').forEach(option => {
+    const chosen = option.dataset.value === ui.selectedPlatform;
+    option.classList.toggle('chosen', chosen);
+    option.setAttribute('aria-pressed', String(chosen));
+    option.querySelector('.radio-check').innerHTML = chosen ? icon('check') : '';
+  });
+  const nicknameInput = $('#nickname');
+  if (nicknameInput && ui.modal.nickname !== undefined) nicknameInput.value = ui.modal.nickname;
+  const startButton = $('.onboarding-start');
+  if (startButton) startButton.innerHTML = `${accounts[ui.selectedPlatform] ? '继续我的创作旅程' : '开启我的创作旅程'} ${icon('arrow')}`;
+}
 function render() {
-  document.body.dataset.platform = game.platform;
   $('#app').innerHTML = `
     <aside class="sidebar ${ui.menu ? 'mobile-open' : ''}">
       <a class="brand" href="#" data-route="dashboard"><span class="brand-mark">${logo()}</span><span>UP主模拟器<small>CREATOR SIMULATOR</small></span></a>
@@ -175,11 +205,12 @@ function modalShell(content, cls = '', title = '') {
 }
 function renderModal() {
   const m = ui.modal;
+  applyPlatformTheme();
   document.body.classList.toggle('modal-open', !!m);
   if (!m) { $('#modal-root').innerHTML = ''; return; }
   let content = '';
   if (m.type === 'platform') {
-    content = modalShell(`<div class="onboarding-brand">${icon('sparkles')} UP主模拟器</div><span class="eyebrow">每一份热爱，都有它的舞台</span><h2>${onboarded ? '切换你的创作主场' : '你的创作人生，从这里开始。'}</h2><p class="modal-description">选择一个平台，运营账号、与观众互动，成为下一位人气创作者。</p><div class="platform-options">${Object.values(PLATFORMS).map(p => `<button class="platform-option ${ui.selectedPlatform === p.id ? 'chosen' : ''}" data-action="select-platform" data-value="${p.id}" style="--platform-accent:${p.accent}"><span class="platform-option-head"><span class="platform-select-logo ${p.id}">${logo(p.id)}</span><span class="radio-check">${ui.selectedPlatform === p.id ? icon('check') : ''}</span></span><strong>${p.name}</strong><span class="platform-tagline">${p.tagline}</span><p>${p.description}</p><div>${p.perks.map(text => `<span>${icon('check')}${text}</span>`).join('')}</div><small>${accounts[p.id] ? `已有存档 · 第 ${accounts[p.id].day} 天` : '初始粉丝 1,286 · 资金 ¥3,000'}</small></button>`).join('')}</div><label class="nickname-label" for="nickname">创作者昵称 <span>让大家记住你</span></label><input class="text-input nickname-input" id="nickname" maxlength="16" value="${esc(m.nickname ?? accounts[ui.selectedPlatform]?.nickname ?? game.nickname)}" placeholder="起一个你喜欢的名字"><button class="button button-primary onboarding-start" data-action="enter-platform">${accounts[ui.selectedPlatform] ? '继续我的创作旅程' : '开启我的创作旅程'} ${icon('arrow')}</button><div class="onboarding-footer">${icon('check')} 三个平台独立存档 <span>·</span> 随时切换 <span>·</span> 本地自动保存</div>`, 'platform-modal', '选择创作平台');
+    content = modalShell(`<div class="onboarding-brand">${icon('sparkles')} UP主模拟器</div><span class="eyebrow">每一份热爱，都有它的舞台</span><h2>${onboarded ? '切换你的创作主场' : '你的创作人生，从这里开始。'}</h2><p class="modal-description">选择一个平台，运营账号、与观众互动，成为下一位人气创作者。</p><div class="platform-options">${Object.values(PLATFORMS).map(p => `<button class="platform-option ${ui.selectedPlatform === p.id ? 'chosen' : ''}" data-action="select-platform" data-value="${p.id}" aria-pressed="${ui.selectedPlatform === p.id}" style="--platform-accent:${p.accent}"><span class="platform-option-head"><span class="platform-select-logo ${p.id}">${logo(p.id)}</span><span class="radio-check">${ui.selectedPlatform === p.id ? icon('check') : ''}</span></span><strong>${p.name}</strong><span class="platform-tagline">${p.tagline}</span><p>${p.description}</p><div>${p.perks.map(text => `<span>${icon('check')}${text}</span>`).join('')}</div><small>${accounts[p.id] ? `已有存档 · 第 ${accounts[p.id].day} 天` : '初始粉丝 1,286 · 资金 ¥3,000'}</small></button>`).join('')}</div><label class="nickname-label" for="nickname">创作者昵称 <span>让大家记住你</span></label><input class="text-input nickname-input" id="nickname" maxlength="16" value="${esc(m.nickname ?? accounts[ui.selectedPlatform]?.nickname ?? game.nickname)}" placeholder="起一个你喜欢的名字"><button class="button button-primary onboarding-start" data-action="enter-platform">${accounts[ui.selectedPlatform] ? '继续我的创作旅程' : '开启我的创作旅程'} ${icon('arrow')}</button><div class="onboarding-footer">${icon('check')} 三个平台独立存档 <span>·</span> 随时切换 <span>·</span> 本地自动保存</div>`, 'platform-modal', '选择创作平台');
   } else if (m.type === 'create') {
     const d = ui.draft, q = QUALITIES.find(q => q.id === d.quality);
     content = modalShell(`<span class="eyebrow">把灵感变成你的下一条作品</span><h2>发布新作品</h2><p class="modal-description">好作品不只有一个答案。选题、制作和时机，都由你决定。</p><div class="create-form"><label class="field-label" for="video-title">作品标题 <span id="title-count">${d.title.length}/40</span></label><input id="video-title" class="text-input" maxlength="40" placeholder="给这次创作起个让人想点开的名字…" value="${esc(d.title)}"><label class="field-label">选择题材</label><div class="topic-options">${TOPICS.map(t => `<button data-action="select-topic" data-value="${t.id}" class="topic-option ${d.topic === t.id ? 'chosen' : ''}">${icon(t.icon)}<span>${t.name}</span></button>`).join('')}</div><label class="field-label">制作投入 <span>高质量带来好口碑，曝光也需要一点运气</span></label><div class="quality-options">${QUALITIES.map(q => `<button data-action="select-quality" data-value="${q.id}" class="quality-option ${d.quality === q.id ? 'chosen' : ''}"><span class="radio-check">${d.quality === q.id ? icon('check') : ''}</span><strong>${q.name}</strong><small>${q.desc}</small><span>¥${q.cost} <i>·</i> ${q.energy} 能量</span></button>`).join('')}</div><label class="field-label">内容策略</label><div class="strategy-options">${STRATEGIES.map(s => `<button data-action="select-strategy" data-value="${s.id}" class="strategy-option ${d.strategy === s.id ? 'chosen' : ''}">${icon(s.icon)}<span><strong>${s.name}</strong><small>${s.desc}</small></span><span class="radio-check">${d.strategy === s.id ? icon('check') : ''}</span></button>`).join('')}</div>${d.strategy === 'edge' ? `<p class="risk-hint">${icon('alert')} 争议擦边会降低口碑，有 48% 概率遭遇模拟限流，并可能掉粉。</p>` : ''}<div class="publish-footer"><span>本次投入 <strong>¥${q.cost}</strong><small>${q.energy} 能量 · 当前可用 ¥${currency(game.cash)} / ${game.energy} 能量</small></span><button class="button button-primary" data-action="publish" ${game.cash < q.cost || game.energy < q.energy || game.live ? 'disabled' : ''}>${icon('plus')} 发布作品</button></div><p id="form-error" class="form-error" role="alert">${game.live ? '请先结束当前直播。' : game.cash < q.cost ? '资金不足，试试轻量制作、直播或任务奖励。' : game.energy < q.energy ? '能量不足，结束今日即可恢复。' : ''}</p></div>`, 'create-modal', '发布新作品');
@@ -220,7 +251,7 @@ document.addEventListener('click', e => {
       case 'close': closeModal(); break;
       case 'menu': ui.menu = !ui.menu; render(); break;
       case 'platform': ui.selectedPlatform = game.platform; openModal('platform'); break;
-      case 'select-platform': { const input = $('#nickname'); if (input) ui.modal.nickname = input.value; ui.selectedPlatform = value; if (accounts[value]) ui.modal.nickname = accounts[value].nickname; renderModal(); break; }
+      case 'select-platform': { if (ui.selectedPlatform === value) break; const input = $('#nickname'); if (input) ui.modal.nickname = input.value; ui.selectedPlatform = value; if (accounts[value]) ui.modal.nickname = accounts[value].nickname; updatePlatformSelection(); break; }
       case 'enter-platform': { const name = $('#nickname').value.trim(); if (!name) { $('#nickname').focus(); toast('先给自己起个昵称吧。', 'warning'); break; } accounts[game.platform] = game; game = accounts[ui.selectedPlatform] || createGame(ui.selectedPlatform, name); game.nickname = name.slice(0, 16); onboarded = true; ui.route = game.live ? 'live' : 'dashboard'; ui.modal = null; save(); render(); toast(`欢迎来到${PLATFORMS[game.platform].name}，你的创作主场已就位。`); break; }
       case 'create': create(); break;
       case 'hotspot': create(el.dataset.topic, 'trend'); break;
