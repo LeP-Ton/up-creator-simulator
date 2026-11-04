@@ -6,6 +6,7 @@
   - 会话：会话-14 起的 GitHub 发布任务。
   - 内容：发布公开源码仓库，接入测试、构建与 GitHub Pages 在线试玩。
   - 读取场景：修改 GitHub Actions、仓库远程地址、构建产物或 GitHub Pages 发布流程时。
+  - 交付：公开仓库及 Pages 已发布，云端全部检查通过；关键线上资源 HTTP 200，线上浏览器交互因工具连接超时未复核。
 
 - `workflow/20261104212511-create-up-simulator.md`
   - 会话：会话-1 开始的首次开发任务。
