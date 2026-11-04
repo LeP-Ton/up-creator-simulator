@@ -117,5 +117,6 @@
 ## 交付状态
 
 - 本地网页、单文件产物、源码、运行说明和项目文档已完成。
+- 会话-10 发布修复：托管工具拒绝 `creator-studio/dist` 作为配置目录，调整为标准根目录 `dist`；构建脚本将已验证应用复制到该目录，源代码与本地预览路径不变。
 - 最终验证：`npm test` 15 项通过；`npm run check` 通过；`npm run build` 成功，且合并脚本语法校验通过；`git diff --check` 通过。
 - 私有 Sites 项目已建立，原上传审批阻塞已由用户明确授权解除；继续复用 `.openai/hosting.json` 中的 project_id，刷新短期凭据并发布。

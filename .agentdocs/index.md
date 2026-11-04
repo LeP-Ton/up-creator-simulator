@@ -12,6 +12,7 @@
 - 项目长期约定与检索顺序见根目录 `AGENTS.md`。
 - `creator-studio/dist/` 是完整静态应用，修改后直接刷新预览，无构建步骤；`npm run dev` 默认使用 4173 端口。
 - `npm run build` 可生成内嵌全部素材的 `creator-studio/dist/standalone.html`，用于直接打开及离线试玩，产物不纳入 Git。
+- Sites 托管需要使用根目录 `dist/`；`npm run build` 同时生成此目录，`.openai/hosting.json` 的标准目录约束不可配置为任意子目录。
 - 游戏引擎集中于 `engine.mjs`，与界面分离；随机规则允许注入随机数，测试使用 Node.js 内置工具。
 - 游戏与真实平台隔离。创作者姓名是真实名单灵感，榜单分数及互动事件均为模拟。
 - Sites 项目身份见 `.openai/hosting.json`；后续更新复用 project_id，保持站点访问范围。

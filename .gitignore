@@ -5,3 +5,4 @@ node_modules/
 .sites-checkout/
 qa/
 creator-studio/dist/standalone.html
+/dist/

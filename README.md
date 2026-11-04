@@ -12,6 +12,8 @@ npm run dev
 
 浏览器打开 http://localhost:4173。静态部署目录为 `creator-studio/dist/`，无需打包构建。
 
+Sites 托管发布前执行 `npm run build`，使用生成的根目录 `dist/`。该步骤只合并单文件并复制静态资源，不安装或编译框架。
+
 也可以运行 `npm run build`，然后双击 `creator-studio/dist/standalone.html` 直接试玩。单文件版内嵌全部图片、样式和脚本，无需联网；其存档与在线版本分别保存在对应浏览器来源下。
 
 ## 游戏玩法

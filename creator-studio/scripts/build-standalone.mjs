@@ -1,4 +1,4 @@
-import { readFile, writeFile, readdir } from 'node:fs/promises';
+import { readFile, writeFile, readdir, mkdir, cp } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
@@ -29,4 +29,12 @@ const output = html.replace('<script type="module" src="./app.js"></script>', ()
 const destination = new URL('standalone.html', dist);
 await writeFile(destination, output, 'utf8');
 console.log(`单文件游戏已生成：${fileURLToPath(destination)}`);
+
+// 托管工具只接受根目录标准产物目录，保持本地源码目录与预览入口稳定。
+const release = new URL('../../dist/', import.meta.url);
+await mkdir(release, { recursive: true });
+for (const entry of await readdir(dist, { withFileTypes: true })) {
+  await cp(new URL(entry.name, dist), new URL(entry.name, release), { recursive: true });
+}
+console.log(`静态发布目录已生成：${fileURLToPath(release)}`);
 

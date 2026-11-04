@@ -5,6 +5,7 @@
 - 中文浏览器经营游戏，玩家选择抖音、哔哩哔哩或小红书主题，经营自己的模拟账号。
 - 使用原生 HTML、CSS、JavaScript ES Modules（浏览器模块），无第三方前端运行依赖；Node.js 负责本地服务器与自动化测试。
 - 应用位于 `creator-studio/`，可部署静态文件位于 `creator-studio/dist/`。
+- `npm run build` 将应用复制为根目录 `dist/` 托管产物；Sites 的 `static.directory` 必须为工具支持的标准目录，当前使用 `dist`。
 - 平台风格参考真实创作者后台，但不连接真实平台，不采集登录信息；所有经营数据及榜单分数均为游戏模拟。
 
 ## 核心架构与目录
@@ -23,8 +24,8 @@
 - `npm run dev`：启动本地预览，默认 `http://localhost:4173`。
 - `npm test`：执行游戏引擎测试。
 - `npm run check`：检查 JavaScript 语法。
-- `npm run build`：生成 `creator-studio/dist/standalone.html` 单文件版本，内嵌样式、脚本与图片，可直接在浏览器中打开。
-- 静态站点不需要打包，`creator-studio/dist/` 就是完整应用；单文件生成是可选的离线交付方式。
+- `npm run build`：生成 `creator-studio/dist/standalone.html` 单文件版本，并同步根目录 `dist/` 静态托管产物。
+- 本地预览无需构建，`creator-studio/dist/` 就是完整应用；Sites 发布前执行 `npm run build` 生成根目录 `dist/`。单文件游戏内嵌全部资源，可供离线交付。
 
 ## 项目检索方法
 
