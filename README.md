@@ -2,6 +2,14 @@
 
 在抖音、哔哩哔哩、小红书三种主题工作台中经营模拟账号，通过作品发布、直播互动和数据复盘冲击人气榜。
 
+[在线试玩](https://lep-ton.github.io/up-creator-simulator/) · [GitHub 仓库](https://github.com/LeP-Ton/up-creator-simulator) · [自动检查与部署](https://github.com/LeP-Ton/up-creator-simulator/actions/workflows/pages.yml)
+
+## GitHub Pages 发布
+
+修改游戏代码并推送到 `main` 后，GitHub Actions 会依次执行测试、语法检查、构建及 Pages 部署。也可在 Actions 的“检查并发布 GitHub Pages”工作流中手动触发。
+
+发布内容为构建生成的 `dist/`，构建产物不提交到源码分支。仓库 Pages 的发布来源应设置为 GitHub Actions。
+
 ## 本地运行
 
 需要 Node.js 20 或更新版本，无需安装依赖。

@@ -18,6 +18,7 @@
 - `creator-studio/tests/`：使用 Node.js 内置测试工具验证经营规则。
 - `.openai/hosting.json`：Sites 站点标识与静态部署目录，保留既有 project_id。
 - `.agentdocs/`：变更索引与任务语义记录。
+- `.github/workflows/pages.yml`：GitHub Pages 自动测试、构建和部署；修改游戏代码并推送 `main` 时触发，也支持手动触发。
 
 ## 运行与验证
 
@@ -26,6 +27,7 @@
 - `npm run check`：检查 JavaScript 语法。
 - `npm run build`：生成 `creator-studio/dist/standalone.html` 单文件版本，并同步根目录 `dist/` 静态托管产物。
 - 本地预览无需构建，`creator-studio/dist/` 就是完整应用；Sites 发布前执行 `npm run build` 生成根目录 `dist/`。单文件游戏内嵌全部资源，可供离线交付。
+- GitHub 公开仓库为 `LeP-Ton/up-creator-simulator`，`origin` 指向该仓库。GitHub Pages 使用 Actions 发布根目录 `dist/`，构建通过后才执行部署；工作流使用 Node.js 24，无需安装依赖。
 
 ## 项目检索方法
 

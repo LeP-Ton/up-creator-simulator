@@ -1,0 +1,62 @@
+name: 检查并发布 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'creator-studio/**'
+      - 'package.json'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 测试与构建
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: 获取源码
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: 准备 Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: 执行游戏规则测试
+        run: npm test
+      - name: 检查脚本语法
+        run: npm run check
+      - name: 生成静态站点与单文件游戏
+        run: npm run build
+      - name: 读取 Pages 配置
+        uses: actions/configure-pages@v5
+      - name: 上传静态产物
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    name: 发布在线试玩
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1
